@@ -105,22 +105,3 @@ jobs:
         run: |
           gsutil rm -rf ${{ env.BUCKET_PATH }} || true
           gsutil cp dist/installers/Brim-*.dmg* dist/installers/Brim-*-mac.zip dist/installers/latest-mac.yml ${{ env.BUCKET_PATH }}
-
-      - name: Assemble Slack message that points to multiple artifacts
-        run: |
-          echo "SLACK_TEXT<<EOF" >> $GITHUB_ENV
-          echo "New macOS release available -" >> $GITHUB_ENV
-          for FILENAME in $(find dist/installers -type f -name \*.dmg -exec basename {} \;)
-          do
-            echo "\n<${{ env.PUBLIC_BUCKET_PATH }}/$FILENAME|${{ env.BUCKET_PATH }}/$FILENAME>" >> $GITHUB_ENV
-          done
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Inform Slack users at Brim HQ of the new artifact
-        uses: tiloio/slack-webhook-action@v1.1.2
-        with:
-          slack_web_hook_url: ${{ secrets.SLACK_WEBHOOK_BRIMLABS_RELEASES }}
-          slack_json: '{
-            "username": "release-automation",
-            "text": "${{ env.SLACK_TEXT }}"
-            }'
