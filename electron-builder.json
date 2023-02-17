@@ -16,5 +16,6 @@
   "afterSign": "electron-builder-notarize",
   "publish": {
     "provider": "github"
-  }
+  },
+  "generateUpdatesFilesForAllChannels": true
 }
